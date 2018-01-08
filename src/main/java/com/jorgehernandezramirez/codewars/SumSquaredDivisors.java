@@ -1,0 +1,43 @@
+package com.jorgehernandezramirez.codewars;
+
+import java.util.Arrays;
+import java.util.stream.LongStream;
+
+/*
+Divisors of 42 are : 1, 2, 3, 6, 7, 14, 21, 42. These divisors squared are: 1, 4, 9, 36, 49, 196, 441, 1764. The sum of the squared divisors is 2500 which is 50 * 50, a square!
+
+Given two integers m, n (1 <= m <= n) we want to find all integers between m and n whose sum of squared divisors is itself a square. 42 is such a number.
+
+The result will be an array of arrays or of tuples (in C an array of Pair) or a string, each subarray having two elements, first the number whose squared divisors is a square and then the sum of the squared divisors.
+
+#Examples:
+
+list_squared(1, 250) --> [[1, 1], [42, 2500], [246, 84100]]
+list_squared(42, 250) --> [[42, 2500], [246, 84100]]
+The form of the examples may change according to the language, see Example Tests: for more details.
+ */
+public class SumSquaredDivisors {
+
+    public static String listSquared(long m, long n) {
+       return   Arrays.toString(LongStream.rangeClosed(Long.valueOf(m).intValue(), Long.valueOf(n).intValue())
+                                .boxed()
+                                .map(value -> new long[]{value, getSumSqrtDivisors(value)})
+                                .filter(array -> isPerfectSqrt(array[1]))
+                                .map(Arrays::toString)
+                                .toArray(String[]::new));
+    }
+
+    private static Boolean isPerfectSqrt(final Object number){
+        double sqrt = Math.sqrt((long)number);
+        int x = (int) sqrt;
+        return Math.pow(sqrt,2) == Math.pow(x,2);
+    }
+
+    private static long getSumSqrtDivisors(final long number){
+        return (long)LongStream.rangeClosed(1, number)
+                .filter(value -> number % value == 0)
+                .asDoubleStream()
+                .map(value -> Math.pow(value, 2))
+                .sum();
+    }
+}
